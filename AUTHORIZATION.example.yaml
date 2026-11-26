@@ -1,0 +1,37 @@
+# security_seti authorization / rules of engagement
+#
+# Copy to AUTHORIZATION.yaml and fill in. NOTHING runs against a target that is
+# not listed here. With no authorization loaded, the mesh denies everything.
+#
+# Only ever list assets you own or have WRITTEN authorization to test.
+
+engagement: "ACME external assessment 2026-Q4"
+authorized_by: "jane.doe@acme.example (signed SOW 2026-11-01)"
+
+# Hosts, domains (subdomains included), and CIDRs you may test.
+targets:
+  - 10.10.0.0/24
+  - app.acme.example
+  - api.acme.example
+
+# argv allow/deny for CommandToolAdapter. Empty allow-list => only the deny-list
+# governs. A command must start with an allowed prefix and no denied prefix.
+allow_argv_prefixes:
+  - "nmap "
+  - "httpx"
+  - "nuclei "
+deny_argv_prefixes:
+  - "nmap --script vuln"     # no intrusive scripts without a dedicated approval
+  - "rm "
+  - "dd "
+
+# Action classes that require a human APPROVAL_RES before they run.
+# Adapters tag their actions: read | scan | exploit | write | lateral | exfil
+require_approval:
+  - exploit
+  - write
+  - lateral
+  - exfil
+
+# Noise governor: ceiling on requests/min an adapter should send at a target.
+max_requests_per_min: 300

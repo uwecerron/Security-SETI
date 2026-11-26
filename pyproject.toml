@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "security-seti"
+version = "0.1.0"
+description = "A coordination mesh for autonomous security-research agents — the anti-distributed.net."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "AGPL-3.0-or-later" }
+authors = [{ name = "Uwe Cerron" }]
+keywords = ["security", "pentest", "cryptanalysis", "agents", "metasploit", "artex", "mesh"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Information Technology",
+    "Topic :: Security",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Programming Language :: Python :: 3",
+]
+dependencies = []  # core is pure standard library on purpose
+
+[project.optional-dependencies]
+metasploit = ["pymetasploit3>=1.0"]
+artex = ["requests>=2.28"]
+yaml = ["pyyaml>=6.0"]
+dev = ["pytest>=7", "pytest-asyncio>=0.21"]
+all = ["pymetasploit3>=1.0", "requests>=2.28", "pyyaml>=6.0"]
+
+[project.scripts]
+security-seti = "security_seti.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/uwecerron/security_seti"
+Issues = "https://github.com/uwecerron/security_seti/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

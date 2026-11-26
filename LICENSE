@@ -1,0 +1,37 @@
+                    GNU AFFERO GENERAL PUBLIC LICENSE
+                       Version 3, 19 November 2007
+
+  security_seti — a coordination mesh for autonomous security-research agents
+  Copyright (C) 2026  Uwe Cerron
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+  AGPL-3.0 note on network use (section 13): if you run a modified version of
+  this program and let users interact with it remotely over a network, you must
+  offer those users the corresponding source of your modified version. This is
+  deliberate: it keeps a hosted security service built on this code open, the
+  same terms ARTEX ships under.
+
+-------------------------------------------------------------------------------
+  The complete, canonical text of the GNU Affero General Public License v3.0
+  must accompany this software. It is omitted from this scaffold only because
+  the build environment could not fetch it. Drop it in with:
+
+      curl -L https://www.gnu.org/licenses/agpl-3.0.txt -o LICENSE
+
+  (run on a machine with network access), or copy it from:
+      https://www.gnu.org/licenses/agpl-3.0.txt
+
+  SPDX-License-Identifier: AGPL-3.0-or-later
+-------------------------------------------------------------------------------
