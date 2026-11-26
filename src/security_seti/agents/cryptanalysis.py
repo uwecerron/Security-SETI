@@ -20,6 +20,7 @@ lattice agent would use.
 
 from __future__ import annotations
 
+import asyncio
 import math
 import random
 from typing import Any, Dict, List, Optional, Tuple
@@ -89,6 +90,7 @@ class DifferentialCryptanalysisAgent(Agent):
         self.rounds = 3
         self.samples = 20000
         self.finding_threshold = 0.8     # confidence to promote to a finding
+        self.max_rounds = 8              # stop chaining extensions past this depth
 
     async def on_goal(self, msg: Message) -> None:
         meta = msg.payload.get("meta") or {}
@@ -121,7 +123,10 @@ class DifferentialCryptanalysisAgent(Agent):
         seed = int(spec.get("seed", 0x5E71))
         goal_id = task.get("goal_id", "")
 
-        best, prob, _ = measure_differential(delta_in, rounds, samples, seed)
+        # Run the CPU-bound measurement off the event loop so an agent never
+        # starves the mesh's networking while it computes.
+        best, prob, _ = await asyncio.to_thread(
+            measure_differential, delta_in, rounds, samples, seed)
         conf = _confidence(prob)
         prob_bits = -math.log2(prob) if prob > 0 else float("inf")
 
@@ -174,7 +179,8 @@ class DifferentialCryptanalysisAgent(Agent):
             return
         delta_out = val.get("delta_out")
         rounds = val.get("rounds", self.rounds)
-        if delta_out is None:
+        if delta_out is None or rounds >= self.max_rounds:
+            # Stop here: unbounded round-chaining would never terminate.
             return
         # Propose extending the characteristic by one round.
         await self.propose_hypothesis(Hypothesis(

@@ -1,0 +1,58 @@
+---
+# Deploy the security_seti hub on Akash (decentralized compute).
+#
+#   1. Build and push the image to a registry:
+#        docker build -t <your-registry>/security-seti-hub -f deploy/Dockerfile .
+#        docker push <your-registry>/security-seti-hub
+#   2. Replace the image below, then:
+#        akash tx deployment create deploy/akash.sdl.yaml --from <key> ...
+#      (or deploy through the Akash Console at https://console.akash.network)
+#
+# This runs the broker + shared ledger on a decentralized provider, reachable at
+# a global port. Put TLS in front of it and set SETI_HUB_TOKEN before real use.
+version: "2.0"
+
+services:
+  hub:
+    image: your-registry/security-seti-hub:latest
+    expose:
+      - port: 8765
+        as: 8765
+        to:
+          - global: true
+    env:
+      # agents must present this token; keep it secret
+      - SETI_HUB_TOKEN=change-me
+    # the ledger lives on persistent storage so the moltbook survives restarts
+    params:
+      storage:
+        data:
+          mount: /data
+
+profiles:
+  compute:
+    hub:
+      resources:
+        cpu:
+          units: 0.5
+        memory:
+          size: 512Mi
+        storage:
+          - size: 512Mi
+          - name: data
+            size: 2Gi
+            attributes:
+              persistent: true
+              class: beta3
+  placement:
+    dcloud:
+      pricing:
+        hub:
+          denom: uakt
+          amount: 10000
+
+deployment:
+  hub:
+    dcloud:
+      profile: hub
+      count: 1

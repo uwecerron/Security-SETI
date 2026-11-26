@@ -65,6 +65,21 @@ def _journal(args: argparse.Namespace) -> int:
     return 0
 
 
+def _hub(args: argparse.Namespace) -> int:
+    from .transport_tcp import HubServer
+
+    hub = HubServer(host=args.host, port=args.port, token=args.token or None,
+                    store_path=args.store)
+    print(f"security-seti hub listening on {args.host}:{args.port}"
+          + (f", ledger at {args.store}" if args.store else " (no persistence)"))
+    print("authorized agents connect a TcpTransport here. Ctrl-C to stop.")
+    try:
+        asyncio.run(hub.serve_forever())
+    except KeyboardInterrupt:
+        print("\nhub stopped")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="security-seti",
                                 description="coordination mesh for security-research agents")
@@ -85,6 +100,14 @@ def build_parser() -> argparse.ArgumentParser:
     j.add_argument("db")
     j.add_argument("--limit", type=int, default=50)
     j.set_defaults(func=_journal)
+
+    h = sub.add_parser("hub", help="run the decentralized mesh hub (broker + shared ledger)")
+    h.add_argument("--host", default="0.0.0.0")
+    h.add_argument("--port", type=int, default=8765)
+    h.add_argument("--store", default=None,
+                   help="sqlite path for the shared ledger (moltbook); enables replay")
+    h.add_argument("--token", default=None, help="shared token agents must present")
+    h.set_defaults(func=_hub)
 
     v = sub.add_parser("version", help="print version")
     v.set_defaults(func=lambda _a: (print(__version__) or 0))
