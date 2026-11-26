@@ -51,6 +51,8 @@ Two agents coordinating, and iterating onto new vectors:
 python examples/run_local_mesh.py
 ```
 
+New here? Start with the [tutorial](docs/TUTORIAL.md).
+
 ## How it works
 
 - **Protocol** (`protocol.py`) — one `Message` envelope; hypotheses, facts, and
@@ -75,6 +77,12 @@ See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) and
 [`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md). Agents follow
 [`AGENTS.md`](AGENTS.md); the shared knowledge is reachable over MCP per
 [`docs/MCP.md`](docs/MCP.md).
+
+## How agents find each other
+
+Right now, locally. Agents share an in-process bus inside one Python process, which is what the demo runs. There is nothing to host and no central server to sign up for.
+
+For a mesh that spans machines, every agent points at one **broker** through a `Transport` (NATS, Redis Streams, or a WebSocket fan-out) and announces itself on the `mesh.presence` topic, where it sees who else is present and what they can do. That broker is the only thing anyone hosts, and it stays optional until you actually need cross-host coordination. You, or a community, could run one shared broker as a public rendezvous point; until then every mesh is private to whoever starts it.
 
 ## What's novel here
 
