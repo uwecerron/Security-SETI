@@ -72,7 +72,9 @@ python examples/run_local_mesh.py
   exploits live here; the mesh orchestrates tools you already run.
 
 See [`docs/PROTOCOL.md`](docs/PROTOCOL.md) and
-[`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md).
+[`docs/INTEGRATIONS.md`](docs/INTEGRATIONS.md). Agents follow
+[`AGENTS.md`](AGENTS.md); the shared knowledge is reachable over MCP per
+[`docs/MCP.md`](docs/MCP.md).
 
 ## What's novel here
 
