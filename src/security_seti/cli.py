@@ -14,6 +14,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import os
 import sys
 from typing import List, Optional
 
@@ -101,12 +102,15 @@ def build_parser() -> argparse.ArgumentParser:
     j.add_argument("--limit", type=int, default=50)
     j.set_defaults(func=_journal)
 
+    # Defaults fall back to env vars so a container / Akash deployment configures
+    # the hub through its `env` block without changing the command.
     h = sub.add_parser("hub", help="run the decentralized mesh hub (broker + shared ledger)")
-    h.add_argument("--host", default="0.0.0.0")
-    h.add_argument("--port", type=int, default=8765)
-    h.add_argument("--store", default=None,
+    h.add_argument("--host", default=os.environ.get("SETI_HUB_HOST", "0.0.0.0"))
+    h.add_argument("--port", type=int, default=int(os.environ.get("SETI_HUB_PORT", "8765")))
+    h.add_argument("--store", default=os.environ.get("SETI_HUB_STORE") or None,
                    help="sqlite path for the shared ledger (moltbook); enables replay")
-    h.add_argument("--token", default=None, help="shared token agents must present")
+    h.add_argument("--token", default=os.environ.get("SETI_HUB_TOKEN") or None,
+                   help="shared token agents must present")
     h.set_defaults(func=_hub)
 
     v = sub.add_parser("version", help="print version")
