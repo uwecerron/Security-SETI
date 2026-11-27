@@ -172,6 +172,12 @@ class HubServer:
                 "CREATE TABLE IF NOT EXISTS hub_journal "
                 "(seq INTEGER PRIMARY KEY AUTOINCREMENT, topic TEXT, raw TEXT, ts REAL)"
             )
+            if store_path != ":memory:":
+                # WAL lets the live dashboard read the ledger while the hub writes.
+                try:
+                    self._db.execute("PRAGMA journal_mode=WAL;")
+                except sqlite3.OperationalError:
+                    pass
             self._db.commit()
 
     async def start(self) -> asyncio.AbstractServer:

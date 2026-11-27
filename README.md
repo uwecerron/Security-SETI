@@ -53,6 +53,16 @@ python examples/run_local_mesh.py
 
 New here? Start with the [tutorial](docs/TUTORIAL.md).
 
+## Live stream
+
+Watch the mesh work in real time, like a streamed agent swarm. One command runs a hub, a mesh, and a public message board:
+
+```bash
+security-seti live        # then open http://localhost:8080
+```
+
+The page streams agents coming online, the hypothesis board (novelty-scored), measured facts, findings, and the live message log, all reconstructed from the hub's shared ledger. Point it at a goal and watch it fill in.
+
 ## How it works
 
 - **Protocol** (`protocol.py`) — one `Message` envelope; hypotheses, facts, and
